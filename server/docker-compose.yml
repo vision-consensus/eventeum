@@ -10,10 +10,28 @@ services:
       - mongodb
       - kafka
     environment:
-      SPRING_DATA_MONGODB_HOST: mongodb
+      MONGO_HOST: 127.0.0.1
+      MONGO_PORT: 27017
+      MONGO_DB: test
+      MONGO_USERNAME: test
+      MONGO_PASSWORD: test
+      ENABLE_PROMETHEUS: "true"
+      # INITIAL_START_BLOCK: Only the first run takes effect, and the data of the latestBlock in mongodb
+      # needs to be deleted in the future to take effect again
+      INITIAL_START_BLOCK: 12000000
+      # NUMBLOCKSTOREPLAY: Number of blocks to replay on node or service failure
+      # (ensures no blocks / events are missed on chain reorg)
+      NUMBLOCKSTOREPLAY: 0
+      ETHEREUM_NODE_NAME: test
       ETHEREUM_NODE_URL: http://eth-node:8545
       ZOOKEEPER_ADDRESS: zookeeper:2181
       KAFKA_ADDRESSES: kafka:19092
+      KAFKA_PARTITIONS: 1
+      KAFKA_REPLICATION_SETS: 1
+      KAFKA_TOPIC_CONTRACT_EVENTS: contract-events
+      KAFKA_TOPIC_BLOCK_EVENTS: block-events
+      KAFKA_TOPIC_EVENTEUM_EVENTS: eventeum-events
+      KAFKA_TOPIC_TRANSACTION_EVENTS: transaction-events
     networks:
       - default
 
@@ -38,6 +56,10 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: test
+      MONGO_INITDB_DATABASE: test
     volumes:
       - $HOME/mongodb/data/db:/data/db
     networks:
